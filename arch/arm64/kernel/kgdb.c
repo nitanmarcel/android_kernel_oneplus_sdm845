@@ -233,6 +233,8 @@ static int kgdb_brk_fn(struct pt_regs *regs, unsigned int esr)
 {
 	if (user_mode(regs))
 		return DBG_HOOK_ERROR;
+	if (!kgdb_single_step)
+		return DBG_HOOK_ERROR;
 
 	kgdb_handle_exception(1, SIGTRAP, 0, regs);
 	return DBG_HOOK_HANDLED;
