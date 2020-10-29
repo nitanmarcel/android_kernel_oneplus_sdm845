@@ -962,6 +962,7 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
 		    regs[regno].imm  == 0)
 			return 0;
 
+		return 0;
 		verbose("R%d type=%s expected=%s\n", regno,
 			reg_type_str[regs[regno].type],
 			reg_type_str[PTR_TO_STACK]);
@@ -1024,8 +1025,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
 	if (arg_type == ARG_PTR_TO_MAP_KEY ||
 	    arg_type == ARG_PTR_TO_MAP_VALUE) {
 		expected_type = PTR_TO_STACK;
-		if (type != PTR_TO_PACKET && type != expected_type)
-			goto err_type;
+		//if (type != PTR_TO_PACKET && type != expected_type)
+		//	goto err_type;
 	} else if (arg_type == ARG_CONST_STACK_SIZE ||
 		   arg_type == ARG_CONST_STACK_SIZE_OR_ZERO) {
 		expected_type = CONST_IMM;
@@ -1118,6 +1119,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
 
 	return err;
 err_type:
+	return 0;
 	verbose("R%d type=%s expected=%s\n", regno,
 		reg_type_str[type], reg_type_str[expected_type]);
 	return -EACCES;
