@@ -516,7 +516,14 @@ enum bpf_func_id {
 	 */
 	BPF_FUNC_get_socket_uid,
 
-	__BPF_FUNC_MAX_ID,
+   /**
+   * int bpf_probe_read_user(void *dst, int size, void *src)
+   *     Read a userspace pointer safely.
+   *     Return: 0 on success or negative error
+   */
+   BPF_FUNC_probe_read_user,
+	
+  __BPF_FUNC_MAX_ID,
 };
 
 /* All flags used by eBPF helper functions, placed here. */
