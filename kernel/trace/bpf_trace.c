@@ -77,8 +77,11 @@ EXPORT_SYMBOL_GPL(trace_call_bpf);
 BPF_CALL_3(bpf_probe_read, void *, dst, u32, size, const void *, unsafe_ptr)
 {
 	int ret;
-
+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
 	ret = probe_kernel_read(dst, unsafe_ptr, size);
+#else
+	ret = probe_kernel_read(dst, unsafe_ptr, size);
+#endif
 	if (unlikely(ret < 0))
 		memset(dst, 0, size);
 
@@ -107,7 +110,11 @@ BPF_CALL_3(bpf_probe_read_str, void *, dst, u32, size, const void *, unsafe_ptr)
 	 * code altogether don't copy garbage; otherwise length of string
 	 * is returned that can be used for bpf_perf_event_output() et al.
 	 */
+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+	ret = strncpy_from_unsafe_user(dst, unsafe_ptr, size);
+#else
 	ret = strncpy_from_unsafe(dst, unsafe_ptr, size);
+#endif
 	if (unlikely(ret < 0))
 		memset(dst, 0, size);
 
